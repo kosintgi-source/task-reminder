@@ -9,13 +9,19 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #1B2438;
-    --muted: #6B7385;
-    --faint: #B4BAC6;
-    --line: #E6E9EF;
-    --bg: #F6F7FB;
+    --ink: #0F172A;
+    --muted: #64748B;
+    --faint: #94A3B8;
+    --line: #E2E8F0;
+    --line-strong: #CBD5E1;
+    --bg: #F1F5F9;
     --card: #FFFFFF;
-    --field: #F3F5F9;
+    --field: #F8FAFC;
+    --accent: #2563EB;
+    --accent-press: #1D4ED8;
+    --accent-soft: #EFF6FF;
+    --accent-border: #BFDBFE;
+    --indigo: #4F46E5;
     --green: #06C755;
     --green-press: #05A847;
     --green-soft: #E6F9EE;
@@ -25,14 +31,15 @@
     --red-soft: #FDECEC;
     --amber: #B7791F;
     --amber-soft: #FFF4DB;
-    --shadow: 0 1px 2px rgba(27,36,56,.04), 0 8px 24px rgba(27,36,56,.06);
+    --shadow: 0 1px 2px rgba(15,23,42,.04), 0 6px 18px rgba(15,23,42,.05);
     --r-lg: 20px;
     --r-md: 14px;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --ink: #EEF1F7; --muted: #A1A9BA; --faint: #5D667A; --line: #2A3347;
+      --ink: #EEF1F7; --muted: #A1A9BA; --faint: #5D667A; --line: #2A3347; --line-strong: #3A4560;
       --bg: #0F1420; --card: #171E2D; --field: #1F2839;
+      --accent: #5B8CFF; --accent-press: #4A7BF0; --accent-soft: #1B2544; --accent-border: #2E3F6E;
       --green-soft: #12301F; --blue-soft: #1B2544; --red-soft: #3A1A1D; --amber-soft: #33290F;
       --shadow: none;
     }
@@ -48,7 +55,7 @@
   }
   button { font: inherit; color: inherit; cursor: pointer; }
   button:focus-visible, input:focus-visible, textarea:focus-visible {
-    outline: 2px solid var(--green); outline-offset: 2px;
+    outline: 2px solid var(--accent); outline-offset: 2px;
   }
   .wrap { max-width: 520px; margin: 0 auto; padding: 20px 16px 0; }
 
@@ -56,9 +63,9 @@
   .top { text-align: center; padding: 8px 0 18px; }
   .mark {
     width: 52px; height: 52px; margin: 0 auto 12px;
-    border-radius: 16px; background: var(--green);
+    border-radius: 16px; background: linear-gradient(135deg, var(--accent), var(--indigo));
     display: grid; place-items: center;
-    box-shadow: 0 6px 16px rgba(6,199,85,.28);
+    box-shadow: 0 6px 16px rgba(37,99,235,.28);
   }
   .mark svg { width: 28px; height: 28px; }
   h1 { font-size: 28px; font-weight: 700; margin: 0; letter-spacing: -.01em; }
@@ -66,18 +73,19 @@
 
   .tabs {
     display: grid; grid-template-columns: 1fr 1fr;
-    background: var(--field); border-radius: 14px; padding: 4px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 4px;
     margin: 0 0 18px;
   }
   .tab {
     border: 0; background: transparent; border-radius: 10px;
     padding: 9px 0; font-weight: 600; font-size: 15px; color: var(--muted);
   }
-  .tab[aria-selected="true"] { background: var(--card); color: var(--ink); box-shadow: var(--shadow); }
+  .tab[aria-selected="true"] { background: var(--accent); color: #fff; box-shadow: 0 4px 12px rgba(37,99,235,.25); }
 
   /* ---------- cards & fields ---------- */
   .card {
     background: var(--card); border-radius: var(--r-lg);
+    border: 1px solid var(--line);
     padding: 20px; box-shadow: var(--shadow); margin-bottom: 14px;
   }
   .card-title {
@@ -85,17 +93,17 @@
     font-size: 13px; font-weight: 600; letter-spacing: .04em;
     color: var(--muted); margin: 0 0 14px;
   }
-  .card-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+  .card-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
   label { display: block; font-size: 15px; font-weight: 600; margin: 0 0 8px; }
   .field + .field { margin-top: 16px; }
   input, textarea {
     width: 100%; font: inherit; color: var(--ink);
-    background: var(--field); border: 1.5px solid transparent;
+    background: var(--field); border: 1.5px solid var(--line);
     border-radius: var(--r-md); padding: 13px 14px; appearance: none;
     transition: border-color .15s, background .15s;
   }
   input::placeholder, textarea::placeholder { color: var(--faint); }
-  input:focus, textarea:focus { outline: none; border-color: var(--green); background: var(--card); }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); background: var(--card); }
   input.big { font-size: 19px; font-weight: 600; }
   textarea { resize: none; min-height: 84px; }
   .invalid { border-color: var(--red) !important; }
@@ -107,7 +115,7 @@
     border: 1.5px solid var(--line); background: var(--card);
     border-radius: 999px; padding: 7px 0; font-size: 14px; font-weight: 600; white-space: nowrap;
   }
-  .qbtn[aria-pressed="true"] { border-color: var(--green); background: var(--green-soft); color: var(--green-press); }
+  .qbtn[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-press); }
   .row { display: grid; grid-template-columns: 1.35fr 1fr; gap: 10px; }
   .row > div, input { min-width: 0; }
   input[type="date"], input[type="time"] { text-align: center; font-weight: 600; min-height: 52px; }
@@ -117,20 +125,20 @@
     border: 1.5px solid var(--line); background: var(--card);
     border-radius: var(--r-md); padding: 11px 4px; font-size: 15px; font-weight: 600;
   }
-  .seg button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--card); }
+  .seg button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
 
   .preview {
     display: flex; align-items: center; gap: 14px;
-    margin-top: 16px; padding: 14px 16px;
+    margin-top: 16px; padding: 14px 16px; border: 1px solid #FDE68A;
     border-radius: var(--r-md); background: var(--amber-soft);
   }
   .preview .ic {
     flex: none; width: 42px; height: 42px; border-radius: 12px;
-    background: var(--card); display: grid; place-items: center; font-size: 22px;
+    background: var(--card); border: 1px solid #FDE68A; display: grid; place-items: center; font-size: 22px;
   }
   .preview small { display: block; font-size: 13px; color: var(--amber); font-weight: 600; }
   .preview strong { display: block; font-size: 19px; font-weight: 700; }
-  .preview.warn { background: var(--red-soft); }
+  .preview.warn { background: var(--red-soft); border-color: #FECACA; }
   .preview.warn small, .preview.warn strong { color: var(--red); }
   .preview.warn strong { font-size: 16px; font-weight: 600; }
 
@@ -144,19 +152,34 @@
   .btn {
     width: 100%; border: 0; border-radius: 16px;
     padding: 16px; font-size: 18px; font-weight: 700;
-    background: var(--green); color: #fff;
-    box-shadow: 0 8px 20px rgba(6,199,85,.3);
+    background: var(--accent); color: #fff;
+    box-shadow: 0 8px 20px rgba(37,99,235,.3);
     transition: transform .1s, background .15s;
   }
-  .btn:active { transform: scale(.98); background: var(--green-press); }
+  .btn:active { transform: scale(.98); background: var(--accent-press); }
   .btn[disabled] { opacity: .6; }
-  .btn.ghost { background: var(--field); color: var(--ink); box-shadow: none; }
+  .btn.ghost { background: var(--card); color: var(--ink); box-shadow: none; border: 1.5px solid var(--line-strong); }
+  .btn.danger { background: var(--card); color: var(--red); box-shadow: none; border: 1.5px solid #FECACA; }
+  .btn.danger.confirm { background: var(--red); color: #fff; border-color: var(--red); }
+  .edit-bar { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 8px; }
+  .edit-bar .btn { padding: 15px 6px; font-size: 16px; }
+  .editing-note {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    margin: -6px 0 16px; font-size: 14px; font-weight: 600; color: var(--accent);
+  }
+  .edit {
+    flex: none; width: 40px; height: 40px; border-radius: 50%;
+    border: 1.5px solid var(--accent-border); background: var(--accent-soft);
+    display: grid; place-items: center; color: var(--accent);
+  }
+  .edit svg { width: 18px; height: 18px; }
+  .actions-col { display: flex; flex-direction: column; gap: 8px; }
 
   /* ---------- calendar ---------- */
   .monthbar { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
   .monthbar h2 { flex: 1; margin: 0; font-size: 21px; font-weight: 700; text-align: center; }
   .icon-btn {
-    width: 40px; height: 40px; border-radius: 12px; border: 0;
+    width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--line);
     background: var(--field); display: grid; place-items: center;
   }
   .icon-btn svg { width: 20px; height: 20px; }
@@ -179,7 +202,7 @@
     display: grid; place-items: center; font-size: 15px; font-weight: 500;
   }
   .cell.out .num { color: var(--faint); }
-  .cell.today .num { background: var(--green); color: #fff; font-weight: 700; }
+  .cell.today .num { background: var(--accent); color: #fff; font-weight: 700; }
   .cell.sel:not(.today) .num { background: var(--ink); color: var(--card); font-weight: 700; }
   .chip {
     width: 100%; border-radius: 5px; padding: 1px 4px;
@@ -187,13 +210,13 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     background: var(--blue-soft); color: var(--blue);
   }
-  .chip.today { background: var(--green-soft); color: var(--green-press); }
+  .chip.today { background: var(--accent-soft); color: var(--accent-press); }
   .chip.over { background: var(--red-soft); color: var(--red); }
   .more { font-size: 10.5px; color: var(--muted); font-weight: 600; }
 
   .banner {
     display: flex; align-items: center; gap: 10px; width: 100%;
-    border: 0; text-align: left; border-radius: var(--r-md);
+    border: 1px solid #FECACA; text-align: left; border-radius: var(--r-md);
     background: var(--red-soft); color: var(--red);
     padding: 12px 14px; margin-bottom: 14px; font-weight: 600; font-size: 15px;
   }
@@ -205,7 +228,7 @@
 
   .task {
     display: flex; gap: 14px; align-items: center;
-    background: var(--card); border-radius: var(--r-md);
+    background: var(--card); border-radius: var(--r-md); border: 1px solid var(--line);
     padding: 14px; margin-bottom: 10px; box-shadow: var(--shadow);
     transition: opacity .25s, transform .25s;
   }
@@ -215,7 +238,7 @@
     background: var(--blue-soft); color: var(--blue); font-weight: 700; font-size: 16px;
   }
   .time small { display: block; font-size: 11px; font-weight: 600; }
-  .task.is-today .time { background: var(--green-soft); color: var(--green-press); }
+  .task.is-today .time { background: var(--accent-soft); color: var(--accent-press); }
   .task.is-over .time { background: var(--red-soft); color: var(--red); }
   .task-main { flex: 1; min-width: 0; }
   .task-title { margin: 0; font-weight: 600; font-size: 17px; overflow-wrap: anywhere; }
@@ -230,7 +253,7 @@
     display: grid; place-items: center; color: var(--faint);
   }
   .check svg { width: 20px; height: 20px; }
-  .check:active, .check.busy { border-color: var(--green); background: var(--green); color: #fff; }
+  .check:active, .check.busy { border-color: #16A34A; background: #16A34A; color: #fff; }
 
   .empty { text-align: center; color: var(--muted); padding: 28px 12px; }
   .empty .big { font-size: 36px; display: block; margin-bottom: 4px; }
@@ -238,8 +261,8 @@
   .fab {
     position: fixed; right: 18px; bottom: calc(22px + env(safe-area-inset-bottom)); z-index: 5;
     width: 58px; height: 58px; border-radius: 18px; border: 0;
-    background: var(--green); color: #fff; display: grid; place-items: center;
-    box-shadow: 0 10px 24px rgba(6,199,85,.35);
+    background: var(--accent); color: #fff; display: grid; place-items: center;
+    box-shadow: 0 10px 24px rgba(37,99,235,.35);
   }
   .fab svg { width: 28px; height: 28px; }
 
@@ -252,7 +275,7 @@
   }
   .overlay.show { opacity: 1; pointer-events: auto; }
   .sheet {
-    width: 100%; max-width: 520px; background: var(--card);
+    width: 100%; max-width: 520px; background: var(--card); border-top: 1px solid var(--line);
     border-radius: 24px 24px 0 0; text-align: center;
     padding: 28px 20px calc(20px + env(safe-area-inset-bottom));
     transform: translateY(40px); transition: transform .25s;
@@ -260,12 +283,12 @@
   .overlay.show .sheet { transform: none; }
   .ok-ic {
     width: 72px; height: 72px; margin: 0 auto 14px; border-radius: 50%;
-    background: var(--green-soft); color: var(--green); display: grid; place-items: center;
+    background: #ECFDF3; color: #16A34A; border: 1px solid #BBF7D0; display: grid; place-items: center;
   }
   .ok-ic svg { width: 36px; height: 36px; }
   .sheet h2 { margin: 0; font-size: 23px; }
   .sheet .t { margin: 6px 0 0; font-weight: 600; font-size: 18px; overflow-wrap: anywhere; }
-  .facts { margin: 16px 0 20px; background: var(--field); border-radius: var(--r-md); padding: 4px 14px; text-align: left; }
+  .facts { margin: 16px 0 20px; background: var(--field); border: 1px solid var(--line); border-radius: var(--r-md); padding: 4px 14px; text-align: left; }
   .facts div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; font-size: 15px; }
   .facts div + div { border-top: 1px solid var(--line); }
   .facts span { color: var(--muted); flex: none; }
@@ -284,7 +307,7 @@
   .loading { min-height: 70vh; display: grid; place-items: center; color: var(--muted); text-align: center; padding: 20px; }
   .spinner {
     width: 32px; height: 32px; margin: 0 auto 12px; border-radius: 50%;
-    border: 3px solid var(--line); border-top-color: var(--green);
+    border: 3px solid var(--line); border-top-color: var(--accent);
     animation: spin .8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -314,8 +337,9 @@
     <button class="tab" role="tab" id="tabCal" aria-selected="false">ปฏิทินงาน</button>
   </nav>
 
-  <!-- ================= ฟอร์มเพิ่มงาน ================= -->
+  <!-- ================= ฟอร์มเพิ่ม/แก้ไขงาน ================= -->
   <section id="viewForm">
+    <p class="editing-note" id="editNote" hidden>✏️ กำลังแก้ไขงานที่บันทึกไว้</p>
     <form id="taskForm" novalidate>
       <div class="card">
         <p class="card-title"><span class="dot"></span>รายละเอียดงาน</p>
@@ -332,12 +356,6 @@
 
       <div class="card">
         <p class="card-title"><span class="dot" style="background:var(--blue)"></span>กำหนดเวลา</p>
-        <div class="quick" id="quick">
-          <button type="button" class="qbtn" data-add="0">วันนี้</button>
-          <button type="button" class="qbtn" data-add="1">พรุ่งนี้</button>
-          <button type="button" class="qbtn" data-add="2">มะรืนนี้</button>
-          <button type="button" class="qbtn" data-add="7">สัปดาห์หน้า</button>
-        </div>
         <div class="row">
           <div><label for="dueDate">วันที่</label><input id="dueDate" type="date"></div>
           <div><label for="dueTime">เวลา</label><input id="dueTime" type="time"></div>
@@ -361,10 +379,15 @@
         </div>
       </div>
       <p class="err" id="formError" style="text-align:center"></p>
-      <p class="ver">AI Task Reminder · เวอร์ชัน 4</p>
+      <p class="ver">AI Task Reminder · เวอร์ชัน 5</p>
       <div class="spacer"></div>
 
       <div class="bar"><div class="bar-inner">
+        <div id="editBar" class="edit-bar" hidden>
+          <button type="button" class="btn danger" id="delBtn">ลบ</button>
+          <button type="button" class="btn ghost" id="cancelBtn">ยกเลิก</button>
+          <button class="btn" id="saveEditBtn" type="submit">บันทึกการแก้ไข</button>
+        </div>
         <button class="btn" id="saveBtn" type="submit">บันทึกงาน</button>
       </div></div>
     </form>
@@ -393,7 +416,7 @@
 
     <div class="day-head"><h3 id="dayLabel">–</h3><small id="dayCount"></small></div>
     <div id="dayList"><div class="skeleton"></div></div>
-    <p class="ver">AI Task Reminder · เวอร์ชัน 4</p>
+    <p class="ver">AI Task Reminder · เวอร์ชัน 5</p>
     <div style="height:96px"></div>
 
     <button class="fab" id="fab" aria-label="เพิ่มงาน">
@@ -425,7 +448,7 @@
 <script>
 /* ===== ตั้งค่า ===== */
 const LIFF_ID = "2011622939-JQFpvGzY";
-const GAS_URL = "https://script.google.com/macros/s/AKfycbzQ8OohXswnDIYS88qSbqUjrzazzl-Ufv72ONkbdremHB12NP78MDGlEoCBdNBcm2_8Yg/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyEUCWAQhxBalSObDAYSjqyai8LTQocX_PrPkkmX4NAhpRiv0TYs1xSH1FK9_cse5sOTQ/exec";
 /* =================== */
 
 const $ = (id) => document.getElementById(id);
@@ -433,13 +456,18 @@ const DAYS = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
 const DAYS_FULL = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"];
 const MONTHS = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
 const MONTHS_S = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+const GRACE_MS = 5 * 60000;
+const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg>';
+const ICON_EDIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>';
 
 const state = {
   greeting: "เพิ่มงาน แล้วเราจะทักไปเตือนใน LINE",
   remindBefore: 30,
   tasks: [],
-  month: null,     // Date วันที่ 1 ของเดือนที่แสดง
-  selected: null,  // "YYYY-MM-DD"
+  month: null,
+  selected: null,
+  editId: null,
+  lastWasEdit: false,
 };
 
 /* ---------- helpers ---------- */
@@ -447,6 +475,7 @@ const pad = (n) => String(n).padStart(2, "0");
 const keyOf = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const timeOf = (d) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 const fromKey = (k) => { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d); };
+const isOver = (d) => Date.now() - d.getTime() > GRACE_MS;
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const shortDate = (d) => `${DAYS[d.getDay()]}. ${d.getDate()} ${MONTHS_S[d.getMonth()]} · ${timeOf(d)} น.`;
@@ -487,22 +516,30 @@ async function api(action, data = {}) {
   return json;
 }
 
+async function fetchTasks() {
+  const { tasks } = await api("listTasks");
+  state.tasks = tasks.map((t) => ({ ...t, due: new Date(t.dueIso) })).sort((a, b) => a.due - b.due);
+  return state.tasks;
+}
+
 /* ---------- views ---------- */
 function setView(view) {
   const isCal = view === "calendar";
+  if (isCal && state.editId) exitEdit();
   $("viewForm").hidden = isCal;
   $("viewCal").hidden = !isCal;
   $("tabForm").setAttribute("aria-selected", String(!isCal));
   $("tabCal").setAttribute("aria-selected", String(isCal));
-  $("pageTitle").textContent = isCal ? "ปฏิทินงาน" : "บันทึกงาน";
-  document.title = isCal ? "ปฏิทินงาน" : "บันทึกงาน";
+  const title = isCal ? "ปฏิทินงาน" : (state.editId ? "แก้ไขงาน" : "บันทึกงาน");
+  $("pageTitle").textContent = title;
+  document.title = title;
   if (!isCal) $("hello").textContent = state.greeting;
   window.scrollTo(0, 0);
-  if (isCal) loadTasks();
+  if (isCal) loadCalendar();
 }
 $("tabForm").onclick = () => setView("form");
 $("tabCal").onclick = () => setView("calendar");
-$("fab").onclick = () => { setView("form"); setTimeout(() => $("title").focus(), 150); };
+$("fab").onclick = () => { exitEdit(); setView("form"); setTimeout(() => $("title").focus(), 150); };
 
 /* ================= FORM ================= */
 function getDue() {
@@ -512,16 +549,14 @@ function getDue() {
   return isNaN(dt) ? null : dt;
 }
 
-function syncQuick() {
-  const v = $("dueDate").value;
-  document.querySelectorAll(".qbtn").forEach((b) => {
-    const d = new Date(); d.setDate(d.getDate() + Number(b.dataset.add));
-    b.setAttribute("aria-pressed", String(keyOf(d) === v));
-  });
+function setRemind(min) {
+  state.remindBefore = min;
+  document.querySelectorAll("#seg button").forEach((b) =>
+    b.setAttribute("aria-pressed", String(Number(b.dataset.min) === min)));
+  updatePreview();
 }
 
 function updatePreview() {
-  syncQuick();
   const due = getDue();
   const box = $("preview");
   box.classList.remove("warn");
@@ -532,7 +567,7 @@ function updatePreview() {
     $("previewText").textContent = "เวลานี้ผ่านไปแล้ว เลือกเวลาในอนาคต";
   } else if (at <= new Date()) {
     box.classList.add("warn");
-    $("previewText").textContent = "เวลาเตือนผ่านไปแล้ว จะเตือนทันทีหลังบันทึก";
+    $("previewText").textContent = "เวลาเตือนผ่านไปแล้ว จะเตือนภายใน 1 นาที";
   } else {
     $("previewText").textContent = shortDate(at);
   }
@@ -543,36 +578,24 @@ function setDefaults() {
   d.setMinutes(0, 0, 0);
   $("dueDate").value = keyOf(d);
   $("dueTime").value = timeOf(d);
-  updatePreview();
+  setRemind(30);
 }
 
-$("quick").addEventListener("click", (e) => {
-  const b = e.target.closest(".qbtn");
-  if (!b) return;
-  const d = new Date(); d.setDate(d.getDate() + Number(b.dataset.add));
-  $("dueDate").value = keyOf(d);
-  if (!$("dueTime").value) $("dueTime").value = "09:00";
-  // ถ้าเลือก "วันนี้" แต่เวลาผ่านไปแล้ว เลื่อนเป็นชั่วโมงถัดไป
-  if (b.dataset.add === "0" && getDue() <= new Date()) {
-    const n = new Date(Date.now() + 3600000); n.setMinutes(0, 0, 0);
-    $("dueTime").value = timeOf(n);
-  }
-  $("dueError").textContent = "";
-  updatePreview();
-});
+function resetForm() {
+  $("title").value = "";
+  $("detail").value = "";
+  ["title", "dueDate"].forEach((id) => $(id).classList.remove("invalid"));
+  ["titleError", "dueError", "formError"].forEach((id) => { $(id).textContent = ""; });
+  setDefaults();
+}
 
 $("seg").addEventListener("click", (e) => {
   const b = e.target.closest("button");
-  if (!b) return;
-  document.querySelectorAll("#seg button").forEach((x) => x.setAttribute("aria-pressed", "false"));
-  b.setAttribute("aria-pressed", "true");
-  state.remindBefore = Number(b.dataset.min);
-  updatePreview();
+  if (b) setRemind(Number(b.dataset.min));
 });
-
 ["dueDate", "dueTime"].forEach((id) => $(id).addEventListener("input", () => {
   $("dueError").textContent = "";
-  $(id).classList.remove("invalid");
+  $("dueDate").classList.remove("invalid");
   updatePreview();
 }));
 $("title").addEventListener("input", () => {
@@ -580,6 +603,66 @@ $("title").addEventListener("input", () => {
   $("title").classList.remove("invalid");
 });
 
+/* ---------- edit mode ---------- */
+function openEdit(task) {
+  state.editId = task.id;
+  $("title").value = task.title;
+  $("detail").value = task.detail || "";
+  $("dueDate").value = keyOf(task.due);
+  $("dueTime").value = timeOf(task.due);
+  const known = [0, 15, 30, 60, 180, 1440];
+  setRemind(known.includes(task.remindBefore) ? task.remindBefore : 30);
+  $("editNote").hidden = false;
+  $("editBar").hidden = false;
+  $("saveBtn").hidden = true;
+  $("tabForm").textContent = "✏️ แก้ไขงาน";
+  setView("form");
+}
+
+function exitEdit() {
+  if (!state.editId) return;
+  state.editId = null;
+  $("editNote").hidden = true;
+  $("editBar").hidden = true;
+  $("saveBtn").hidden = false;
+  $("tabForm").textContent = "＋ เพิ่มงาน";
+  resetDelete();
+  resetForm();
+}
+
+$("cancelBtn").onclick = () => setView("calendar");
+
+function resetDelete() {
+  const b = $("delBtn");
+  b.classList.remove("confirm");
+  b.textContent = "ลบ";
+  clearTimeout(resetDelete._t);
+}
+$("delBtn").onclick = async () => {
+  const b = $("delBtn");
+  if (!b.classList.contains("confirm")) {
+    b.classList.add("confirm");
+    b.textContent = "ยืนยัน?";
+    resetDelete._t = setTimeout(resetDelete, 3000);
+    return;
+  }
+  clearTimeout(resetDelete._t);
+  b.disabled = true;
+  b.textContent = "…";
+  try {
+    await api("deleteTask", { id: state.editId });
+    state.tasks = state.tasks.filter((t) => t.id !== state.editId);
+    toast("🗑️ ลบงานแล้ว");
+    setView("calendar");
+  } catch (err) {
+    toast(err.message);
+  } finally {
+    b.disabled = false;
+    resetDelete();
+  }
+};
+
+/* ---------- submit ---------- */
 $("taskForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   $("formError").textContent = "";
@@ -596,14 +679,20 @@ $("taskForm").addEventListener("submit", async (e) => {
   }
   if (!ok) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
 
-  const btn = $("saveBtn");
+  const isEdit = !!state.editId;
+  const btn = isEdit ? $("saveEditBtn") : $("saveBtn");
+  const label = btn.textContent;
   btn.disabled = true;
   btn.textContent = "กำลังบันทึก…";
   try {
-    const { task } = await api("addTask", {
+    const { task } = await api(isEdit ? "updateTask" : "addTask", {
+      id: state.editId,
       title, detail: $("detail").value.trim(),
       dueAt: due.toISOString(), remindBefore: state.remindBefore,
     });
+    state.lastWasEdit = isEdit;
+    $("okTitle").textContent = isEdit ? "บันทึกการแก้ไขแล้ว" : "บันทึกงานแล้ว";
+    $("okMore").textContent = isEdit ? "กลับไปปฏิทิน" : "เพิ่มงานอีก";
     $("okTask").textContent = task.title;
     $("okDue").textContent = task.due;
     $("okRemind").textContent = task.remind;
@@ -612,28 +701,25 @@ $("taskForm").addEventListener("submit", async (e) => {
     $("formError").textContent = err.message;
   } finally {
     btn.disabled = false;
-    btn.textContent = "บันทึกงาน";
+    btn.textContent = label;
   }
 });
 
-function resetForm() {
-  $("title").value = "";
-  $("detail").value = "";
-  setDefaults();
-}
 $("okMore").onclick = () => {
   $("overlay").classList.remove("show");
+  if (state.lastWasEdit) { setView("calendar"); return; }
   resetForm();
   setTimeout(() => $("title").focus(), 250);
 };
 $("okClose").onclick = () => {
   $("overlay").classList.remove("show");
+  exitEdit();
   resetForm();
   if (liff.isInClient()) liff.closeWindow();
 };
 
 /* ================= CALENDAR ================= */
-async function loadTasks() {
+async function loadCalendar() {
   if (!state.month) {
     const n = new Date();
     state.month = new Date(n.getFullYear(), n.getMonth(), 1);
@@ -641,9 +727,7 @@ async function loadTasks() {
   }
   renderCalendar();
   try {
-    const { tasks } = await api("listTasks");
-    state.tasks = tasks.map((t) => ({ ...t, due: new Date(t.dueIso) }))
-                       .sort((a, b) => a.due - b.due);
+    await fetchTasks();
     renderCalendar();
   } catch (err) {
     $("dayList").innerHTML = `<div class="empty"><span class="big">⚠️</span>${esc(err.message)}</div>`;
@@ -658,12 +742,13 @@ function tasksByDay() {
 
 function renderCalendar() {
   const byDay = tasksByDay();
-  const now = new Date();
-  const todayKey = keyOf(now);
+  const todayKey = keyOf(new Date());
   const m = state.month;
   $("monthLabel").textContent = `${MONTHS[m.getMonth()]} ${m.getFullYear() + 543}`;
-  const pending = state.tasks.length;
-  if (!$("viewCal").hidden) $("hello").textContent = pending ? `มีงานค้างทั้งหมด ${pending} งาน` : "ไม่มีงานค้าง เยี่ยมมาก";
+  if (!$("viewCal").hidden) {
+    const n = state.tasks.length;
+    $("hello").textContent = n ? `มีงานค้างทั้งหมด ${n} งาน · แตะ ✏️ เพื่อแก้ไข` : "ไม่มีงานค้าง เยี่ยมมาก 🎉";
+  }
 
   const start = new Date(m.getFullYear(), m.getMonth(), 1 - m.getDay());
   const last = new Date(m.getFullYear(), m.getMonth() + 1, 0);
@@ -678,7 +763,7 @@ function renderCalendar() {
     if (k === todayKey) cls.push("today");
     if (k === state.selected) cls.push("sel");
     const chips = list.slice(0, 2).map((t) => {
-      const c = t.due < now ? "over" : (k === todayKey ? "today" : "");
+      const c = isOver(t.due) ? "over" : (k === todayKey ? "today" : "");
       return `<span class="chip ${c}">${esc(t.title)}</span>`;
     }).join("");
     const more = list.length > 2 ? `<span class="more">+${list.length - 2}</span>` : "";
@@ -687,7 +772,7 @@ function renderCalendar() {
   }
   $("grid").innerHTML = html;
 
-  const overdue = state.tasks.filter((t) => t.due < now);
+  const overdue = state.tasks.filter((t) => isOver(t.due));
   $("overdueBanner").hidden = !overdue.length;
   if (overdue.length) {
     $("overdueText").textContent = `⚠️ มีงานเลยกำหนด ${overdue.length} งาน`;
@@ -696,10 +781,16 @@ function renderCalendar() {
   renderDay(byDay);
 }
 
+function remindLabel(min) {
+  if (!min) return "🔔 เตือนตรงเวลา";
+  if (min < 60) return `🔔 เตือนก่อน ${min} นาที`;
+  if (min < 1440) return `🔔 เตือนก่อน ${min / 60} ชม.`;
+  return `🔔 เตือนก่อน ${Math.round(min / 1440)} วัน`;
+}
+
 function renderDay(byDay = tasksByDay()) {
   const d = fromKey(state.selected);
-  const now = new Date();
-  const todayKey = keyOf(now);
+  const todayKey = keyOf(new Date());
   const list = byDay[state.selected] || [];
   const prefix = state.selected === todayKey ? "วันนี้ · " : "";
   $("dayLabel").textContent = `${prefix}${DAYS_FULL[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;
@@ -709,37 +800,31 @@ function renderDay(byDay = tasksByDay()) {
     $("dayList").innerHTML = `<div class="empty"><span class="big">🗓️</span>ไม่มีงานในวันนี้<br>
       <button class="today-btn" style="margin-top:12px" id="addHere">＋ เพิ่มงานวันนี้</button></div>`;
     $("addHere").onclick = () => {
+      exitEdit();
       setView("form");
-      $("dueDate").value = state.selected;
-      if (fromKey(state.selected) < fromKey(todayKey)) $("dueDate").value = todayKey;
+      $("dueDate").value = state.selected < todayKey ? todayKey : state.selected;
       updatePreview();
     };
     return;
   }
 
   $("dayList").innerHTML = list.map((t) => {
-    const over = t.due < now;
+    const over = isOver(t.due);
     const cls = over ? "is-over" : (state.selected === todayKey ? "is-today" : "");
-    const badge = over ? "เลยกำหนด" : (t.sent ? "แจ้งเตือนแล้ว" : remindLabel(t.remindBefore));
-    return `<div class="task ${cls}" data-id="${esc(t.id)}">
+    const badge = over ? "⚠️ เลยกำหนด" : (t.sent ? "✅ แจ้งเตือนแล้ว" : remindLabel(t.remindBefore));
+    return `<div class="task ${cls}">
       <div class="time">${timeOf(t.due)}<small>น.</small></div>
       <div class="task-main">
         <p class="task-title">${esc(t.title)}</p>
         ${t.detail ? `<p class="task-detail">${esc(t.detail)}</p>` : ""}
         <span class="badge">${badge}</span>
       </div>
-      <button class="check" data-id="${esc(t.id)}" aria-label="ทำเสร็จแล้ว">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg>
-      </button>
+      <div class="actions-col">
+        <button class="edit" data-id="${esc(t.id)}" aria-label="แก้ไขงาน">${ICON_EDIT}</button>
+        <button class="check" data-id="${esc(t.id)}" aria-label="ทำเสร็จแล้ว">${ICON_CHECK}</button>
+      </div>
     </div>`;
   }).join("");
-}
-
-function remindLabel(min) {
-  if (!min) return "🔔 เตือนตรงเวลา";
-  if (min < 60) return `🔔 เตือนก่อน ${min} นาที`;
-  if (min < 1440) return `🔔 เตือนก่อน ${min / 60} ชม.`;
-  return `🔔 เตือนก่อน ${Math.round(min / 1440)} วัน`;
 }
 
 function selectDay(k) {
@@ -767,6 +852,12 @@ $("nextM").onclick = () => {
 $("todayBtn").onclick = () => selectDay(keyOf(new Date()));
 
 $("dayList").addEventListener("click", async (e) => {
+  const ed = e.target.closest(".edit");
+  if (ed) {
+    const t = state.tasks.find((x) => x.id === ed.dataset.id);
+    if (t) openEdit(t);
+    return;
+  }
   const b = e.target.closest(".check");
   if (!b || b.classList.contains("busy")) return;
   b.classList.add("busy");
@@ -774,7 +865,7 @@ $("dayList").addEventListener("click", async (e) => {
   try {
     await api("doneTask", { id: b.dataset.id });
     row.classList.add("leaving");
-    toast("✓ ปิดงานแล้ว");
+    toast("✅ ปิดงานแล้ว");
     setTimeout(() => {
       state.tasks = state.tasks.filter((t) => t.id !== b.dataset.id);
       renderCalendar();
@@ -790,14 +881,38 @@ $("dayList").addEventListener("click", async (e) => {
   try {
     await liff.init({ liffId: LIFF_ID });
     if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return; }
-    const view = new URLSearchParams(location.search).get("view");
+    const q = new URLSearchParams(location.search);
+    const view = q.get("view");
     try {
       const p = await liff.getProfile();
       state.greeting = `สวัสดีคุณ${p.displayName} · เราจะทักไปเตือนใน LINE`;
     } catch (_) {}
+    setDefaults();
+
+    if (view === "edit" && q.get("id")) {
+      $("loadingText").textContent = "กำลังโหลดงาน…";
+      try {
+        await fetchTasks();
+      } catch (err) {
+        $("loadingText").textContent = err.message;
+        return;
+      }
+      $("loading").hidden = true;
+      $("app").hidden = false;
+      const t = state.tasks.find((x) => x.id === q.get("id"));
+      if (t) {
+        state.month = new Date(t.due.getFullYear(), t.due.getMonth(), 1);
+        state.selected = keyOf(t.due);
+        openEdit(t);
+      } else {
+        setView("calendar");
+        toast("ไม่พบงานนี้ อาจถูกปิดหรือลบไปแล้ว");
+      }
+      return;
+    }
+
     $("loading").hidden = true;
     $("app").hidden = false;
-    setDefaults();
     setView(view === "calendar" ? "calendar" : "form");
   } catch (err) {
     $("loadingText").textContent = "เชื่อมต่อ LINE ไม่สำเร็จ: " + err.message;
