@@ -209,6 +209,7 @@
   </div>
 </main>
 
+<p id="ver" style="text-align:center;font-size:12px;color:var(--muted);margin:24px 0 0">หน้าบันทึกงาน เวอร์ชัน 3</p>
 <div class="toast" id="toast" role="status"></div>
 
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -240,12 +241,34 @@ function toast(msg) {
 }
 
 /* เรียก Apps Script: ไม่ตั้ง Content-Type เพื่อให้เป็น simple request (ไม่มี CORS preflight) */
+function checkGasUrl() {
+  if (!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(GAS_URL)) {
+    throw new Error("GAS_URL ในไฟล์ index.html ยังไม่ถูกต้อง ต้องเป็น https://script.google.com/macros/s/…/exec");
+  }
+}
+
 async function api(action, data = {}) {
-  const res = await fetch(GAS_URL, {
-    method: "POST",
-    body: JSON.stringify({ action, idToken: liff.getIDToken(), ...data }),
-  });
-  const json = await res.json();
+  checkGasUrl();
+  let res;
+  try {
+    res = await fetch(GAS_URL, {
+      method: "POST",
+      body: JSON.stringify({ action, idToken: liff.getIDToken(), ...data }),
+    });
+  } catch (e) {
+    throw new Error("ติดต่อเซิร์ฟเวอร์ไม่ได้ ตรวจอินเทอร์เน็ตหรือ GAS_URL");
+  }
+  const text = await res.text();
+  let json;
+  try {
+    json = JSON.parse(text);
+  } catch (e) {
+    console.error("คำตอบจากเซิร์ฟเวอร์:", res.status, text.slice(0, 500));
+    if (/accounts\.google\.com|ServiceLogin/i.test(text)) {
+      throw new Error("Apps Script ต้องการล็อกอิน ให้ Deploy ใหม่โดยตั้ง ผู้ที่มีสิทธิ์เข้าถึง = ทุกคน");
+    }
+    throw new Error(`เซิร์ฟเวอร์ตอบกลับไม่ใช่ข้อมูล (HTTP ${res.status}) ตรวจ GAS_URL และการ Deploy`);
+  }
   if (!json.ok) throw new Error(json.error || "เกิดข้อผิดพลาด");
   return json;
 }
