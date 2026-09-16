@@ -356,6 +356,23 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .skeleton { height: 280px; border-radius: var(--r-lg); background: var(--card); opacity: .6; }
   .ver { text-align: center; font-size: 12px; color: var(--faint); margin: 18px 0 0; }
+  .member {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
+    padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 600;
+    background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent-border);
+  }
+  .member.near { background: var(--amber-soft); color: var(--amber); border-color: #FDE68A; }
+  .blocked {
+    position: fixed; inset: 0; z-index: 50; background: var(--bg);
+    display: grid; place-items: center; padding: 24px; text-align: center;
+  }
+  .blocked .box {
+    max-width: 360px; background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--r-lg); padding: 28px 22px; box-shadow: var(--shadow);
+  }
+  .blocked .big { font-size: 48px; display: block; margin-bottom: 8px; }
+  .blocked h2 { margin: 0 0 8px; font-size: 22px; }
+  .blocked p { margin: 0 0 18px; color: var(--muted); }
   [hidden] { display: none !important; }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
@@ -373,6 +390,7 @@
     </div>
     <h1 id="pageTitle">บันทึกงาน</h1>
     <p class="subtitle" id="hello">เพิ่มงาน แล้วเราจะทักไปเตือนใน LINE</p>
+    <span class="member" id="memberPill" hidden></span>
   </header>
 
   <nav class="tabs" role="tablist">
@@ -430,7 +448,7 @@
         </div>
       </div>
       <p class="err" id="formError" style="text-align:center"></p>
-      <p class="ver">AI Task Reminder · เวอร์ชัน 6</p>
+      <p class="ver">พัฒนาระบบโดย บริษัท วิจิตร เอ แอนด์ ที จำกัด</p>
       <div class="spacer"></div>
 
       <div class="bar"><div class="bar-inner">
@@ -467,7 +485,7 @@
 
     <div class="day-head"><h3 id="dayLabel">–</h3><small id="dayCount"></small></div>
     <div id="dayList"><div class="skeleton"></div></div>
-    <p class="ver">AI Task Reminder · เวอร์ชัน 6</p>
+    <p class="ver">AI Task Reminder · เวอร์ชัน 7</p>
     <div style="height:96px"></div>
 
     <button class="fab" id="fab" aria-label="เพิ่มงาน">
@@ -499,13 +517,22 @@
   <img id="lbImg" alt="รูปแนบ">
 </div>
 
+<div class="blocked" id="blocked" hidden>
+  <div class="box">
+    <span class="big" id="blockedIcon">⌛</span>
+    <h2 id="blockedTitle">ไม่สามารถใช้งานได้</h2>
+    <p id="blockedText"></p>
+    <button class="btn" id="blockedClose">กลับไปที่แชท</button>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status"></div>
 
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script>
 /* ===== ตั้งค่า ===== */
 const LIFF_ID = "2011622939-JQFpvGzY";
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxGyJ4Qu5Y6BTB75VIWWQc0U5CwwPqIZdlzd4HZpF5l627AqaQdq9JpPPii3-pnYr7Ndw/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzBiBE558L31oUnLuRWTcgm-JbkFcJwJMzf65P7-ZO3njszJuaBMQLsivQ6x5yX7kyowg/exec";
 /* =================== */
 
 const $ = (id) => document.getElementById(id);
@@ -1028,6 +1055,37 @@ $("dayList").addEventListener("click", async (e) => {
   }
 });
 
+/* ================= MEMBERSHIP ================= */
+function showBlocked(message) {
+  const expired = /หมดอายุ/.test(message);
+  const banned = /ระงับ/.test(message);
+  $("blockedIcon").textContent = banned ? "⛔" : (expired ? "⌛" : "🕒");
+  $("blockedTitle").textContent = banned ? "บัญชีถูกระงับ" : (expired ? "หมดอายุการใช้งาน" : "ยังไม่ถึงวันเริ่มใช้งาน");
+  $("blockedText").textContent = message + (expired ? " พิมพ์ \"ขอต่ออายุ\" ในแชทเพื่อส่งคำขอได้เลย" : "");
+  $("blocked").hidden = false;
+  $("loading").hidden = true;
+}
+$("blockedClose").onclick = () => {
+  if (liff.isInClient()) liff.closeWindow(); else history.back();
+};
+
+async function checkMember() {
+  try {
+    const { member } = await api("me");
+    const pill = $("memberPill");
+    if (member.unlimited) {
+      pill.textContent = "💎 ใช้งานได้ไม่จำกัด";
+    } else {
+      const d = member.daysLeft;
+      pill.textContent = d === 0 ? `⏳ หมดอายุวันนี้ (${member.expire})` : `💎 ใช้ได้ถึง ${member.expire} · เหลือ ${d} วัน`;
+      pill.classList.toggle("near", d <= 7);
+    }
+    pill.hidden = false;
+  } catch (err) {
+    if (/หมดอายุ|ระงับ|เริ่มใช้งาน/.test(err.message)) showBlocked(err.message);
+  }
+}
+
 /* ================= START ================= */
 (async function init() {
   try {
@@ -1039,6 +1097,7 @@ $("dayList").addEventListener("click", async (e) => {
       const p = await liff.getProfile();
       state.greeting = `สวัสดีคุณ${p.displayName} · เราจะทักไปเตือนใน LINE`;
     } catch (_) {}
+    checkMember();
     setDefaults();
     renderPhotos();
 
@@ -1047,7 +1106,8 @@ $("dayList").addEventListener("click", async (e) => {
       try {
         await fetchTasks();
       } catch (err) {
-        $("loadingText").textContent = err.message;
+        if (/หมดอายุ|ระงับ|เริ่มใช้งาน/.test(err.message)) showBlocked(err.message);
+        else $("loadingText").textContent = err.message;
         return;
       }
       $("loading").hidden = true;
